@@ -6,7 +6,7 @@
   <header>
     Header Auth
   </header>
-  <slot />
+  <RouterView />
   <footer>
     Footer Auth
   </footer>

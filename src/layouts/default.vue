@@ -6,7 +6,7 @@
   <header>
     Header
   </header>
-  <slot />
+  <RouterView />
   <footer>
     Footer
   </footer>
