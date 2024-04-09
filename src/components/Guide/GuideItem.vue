@@ -31,8 +31,10 @@ function getLabel(attribute: {
 }) {
   switch (attribute.key) {
     case 'experience':
+      if (Number.isNaN(attribute.value as number))
+        return attribute.value
 
-      return `${attribute.value / 12} năm kinh nghiệm`
+      return `${Number(attribute.value) / 12} năm kinh nghiệm`
 
     default:
       return attribute.value
