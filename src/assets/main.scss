@@ -2,11 +2,21 @@
 
 body {
   padding: 0;
-  margin: 0;
+  margin:0;
+  background-color: #F0F2F5;
 }
 
 * {
+  
   box-sizing: border-box;
-  font-family: 'Open Sans', 'Helvetica Neue', sans-serif;
-  color: var(--color-gray-darker);
+  font-family: 'Neue Montreal',
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif,
+    "Apple Color Emoji",
+    "Segoe UI Emoji",
+    "Segoe UI Symbol",
+    "Noto Color Emoji";
+  color: var(--color-gray);
 }
