@@ -69,30 +69,30 @@ const OpenAi = {
         
     },
 
-    async getParaphraseText(content:string, fullContent: string) {
-        try {
-            const chat = model.startChat({
-                generationConfig,
-                safetySettings,
-                history: [
-                    {
-                        role: "user",
-                        parts: [{ text: "You are a helpful paraphraser. You should " }],
-                    },
-                    {
-                        role: "model",
-                        parts: [{ text: "The quick brown fox jumps over the lazy dog. -> A quick brown fox jumped over a lazy dog." }],
-                    },
-                ],
+    // async getParaphraseText(content:string, fullContent: string) {
+    //     try {
+    //         const chat = model.startChat({
+    //             generationConfig,
+    //             safetySettings,
+    //             history: [
+    //                 {
+    //                     role: "user",
+    //                     parts: [{ text: "You are a helpful paraphraser. You should " }],
+    //                 },
+    //                 {
+    //                     role: "model",
+    //                     parts: [{ text: "The quick brown fox jumps over the lazy dog. -> A quick brown fox jumped over a lazy dog." }],
+    //                 },
+    //             ],
 
-            });
+    //         });
             
             
-        } catch (error) {
-            return ''
-        }
+    //     } catch (error) {
+    //         return ''
+    //     }
 
-    }
+    // }
 }
 
 export default OpenAi
