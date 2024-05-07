@@ -7,7 +7,21 @@ import Sidebar from "@/components/Sidebar.vue";
   <header>
     <Header />
   </header>
-  <RouterView />
-  <Sidebar />
- 
+  <div :class="$style.layoutContainer">
+
+
+    <Sidebar />
+    <RouterView />
+
+  </div>
+
+
 </template>
+
+<style lang="scss" module>
+.layoutContainer {
+  display: flex;
+  flex-direction: row;
+ 
+}
+</style>
