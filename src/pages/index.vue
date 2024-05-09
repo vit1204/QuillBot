@@ -89,12 +89,12 @@ function handleReplace() {
     const selection = window.getSelection()
 
     const range = selection?.getRangeAt(0)
-    console.log('range', range)
 
     range?.deleteContents()
     range?.insertNode(document.createTextNode(resultTooltip.value))
+
     tooltipVisible.value = false
-    
+    selection?.removeAllRanges()
 }
 
 function handleBlur() {
