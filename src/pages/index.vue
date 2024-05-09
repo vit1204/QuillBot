@@ -94,6 +94,7 @@ function handleReplace() {
     range?.deleteContents()
     range?.insertNode(document.createTextNode(resultTooltip.value))
     tooltipVisible.value = false
+    
 }
 
 function handleBlur() {
