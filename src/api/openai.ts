@@ -2,7 +2,6 @@
 // npm install @google/generative-ai
 
 import {
-    
     GoogleGenerativeAI,
     HarmCategory,
     HarmBlockThreshold,
@@ -10,7 +9,7 @@ import {
 
 
 const MODEL_NAME = "gemini-1.0-pro";
-const API_KEY = 'AIzaSyCJXWj5pf1L2LtXYJmr7i4y_G7O3R1Gpmg'
+const API_KEY = 'AIzaSyBRTAhm0tRZD0hamDRR1H7dLZNolS6zkQo'
 
 const genAI = new GoogleGenerativeAI(API_KEY);
 const model = genAI.getGenerativeModel({ model: MODEL_NAME });
@@ -44,6 +43,7 @@ const safetySettings = [
 const OpenAi = {
     async getParaphraseFullContent( fullContent: string) {
         try {
+            
             const chat = model.startChat({
                 generationConfig,
                 safetySettings,
@@ -59,14 +59,14 @@ const OpenAi = {
                 ],
 
             });
+            
             const result = await chat.sendMessage(fullContent);
             const response = result.response;
             console.log(response.text())
-            return response.text()
+            return response.text();
         } catch (error) {
             return ''
-        }
-        
+        }  
     },
 
     // async getParaphraseText(content:string, fullContent: string) {
@@ -85,9 +85,7 @@ const OpenAi = {
     //                 },
     //             ],
 
-    //         });
-            
-            
+    //         }); 
     //     } catch (error) {
     //         return ''
     //     }

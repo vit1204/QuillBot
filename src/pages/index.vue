@@ -1,6 +1,8 @@
 <script setup lang="ts">
-import {ref} from 'vue'
-import OpenAi from '@/api/openai';
+import OpenAi from '@/api/openai'
+import iconLoading from '@/assets/loading.svg'
+import checkIcon from '@/assets/check.svg'
+import {ref, onMounted} from 'vue'
 
 const text = ref<string>('')
 const result = ref<string>('')
@@ -32,30 +34,131 @@ async function parapharseText() {
         console.error(error)
     }
 }
+
+const tooltipVisible = ref<boolean>(false)
+const resultTooltip = ref<string>('')
+const boundingRect = ref<{ x: number, y: number }>({ x: 0, y: 0 })
+
+async function parapharse(text: string) {
+    try {
+        const res = await OpenAi.getParaphraseFullContent(text)
+        console.log(res)
+
+        resultTooltip.value = res
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+onMounted(() => {
+    document.addEventListener('selectionchange', () => {
+        const selection = window.getSelection()
+
+        if (!selection?.rangeCount || selection?.toString().length === 0) {
+            tooltipVisible.value = false
+            return
+        }
+
+        const range = selection.getRangeAt(0)
+
+        const rect = range.getBoundingClientRect()
+
+        boundingRect.value = {
+            x: rect.right,
+            y: rect.top,
+        }
+    })
+})
+
+function handleMouseUp() {
+    const selection = window.getSelection()
+
+    if (!selection?.rangeCount || selection?.toString().length === 0) {
+        tooltipVisible.value = false
+        return
+    }
+
+    tooltipVisible.value = true
+    console.log(selection?.toString())
+    parapharse(selection?.toString())
+}
+
+function handleReplace() {
+    console.log("hehe")
+    const selection = window.getSelection()
+
+    const range = selection?.getRangeAt(0)
+    console.log('range', range)
+
+    range?.deleteContents()
+    range?.insertNode(document.createTextNode(resultTooltip.value))
+}
+
+function handleBlur() {
+    tooltipVisible.value = false
+}
 </script>
 
 <template>
     <div>
-       
+        <div v-if="tooltipVisible" :style="{
+            position: 'fixed',
+            top: `${boundingRect.y}px`,
+            left: `${boundingRect.x}px`,
+            backgroundColor: 'white',
+            minWidth: '20px',
+            minHeight: '20px',
+            zIndex: 999,
+            padding: '10px',
+            pointerEvents: 'none',
+            borderRadius: '8px',
+            boxShadow: 'rgba(17, 17, 26, 0.1) 0px 4px 16px, rgba(17, 17, 26, 0.1) 0px 8px 24px, rgba(17, 17, 26, 0.1) 0px 16px 56px',
+        }">
+            <div v-if="!resultTooltip" :class="$style.iconBox">
+                <img :src="iconLoading" :class="$style.temIcon" alt="iconLoading">
+            </div>
+            <div v-else :style="{
+            cursor: 'pointer',
+            zIndex: 9999,
+        }">
+                <p>
+                    {{ resultTooltip }}
+                </p>
+                
+                <img :src="checkIcon " :class="$style.temIcon"   style="pointer-events: visible;" alt="" @mousedown="handleReplace" >
+            </div>
+        </div>
+        <SidebarAuth :class="$style.homeSidebar" />
         <div :class="$style.homeContent">
             <div :class="$style.homeContentParaPhrase">
+                <TabRight />
                 <ul :class="$style.homeContentLanguageList">
                     <li v-for="(item, index) in languageList" :key="index"
                         :class="activeItem === index && $style.homeLanguageActiveItem" @click="handleActiveItem(index)">
                         {{ item }}
                     </li>
                 </ul>
-                <div :class="$style.homeTextAreaBox">
-                    <div :class="$style.homeTextAreaBoxHeader">
-                        <span :class="$style.homeTextAreaBoxHeaderTitle">Models:</span>
-                        <span :class="$style.homeTextAreaBoxHeaderValue">Standard</span>
+                <div :class="$style.homeTextFillBox">
+                    <div :class="$style.homeTextFillBoxHeader">
+                        <span :class="$style.homeTextFillBoxHeaderTitle">Models:</span>
+                        <span :class="$style.homeTextFillBoxHeaderValueActive">Standard</span>
+                        <span :class="$style.homeTextFillBoxHeaderValue">Fluency</span>
+                        <span :class="$style.homeTextFillBoxHeaderValue">Natural</span>
+                        <span :class="$style.homeTextFillBoxHeaderValue">Academic</span>
                     </div>
-                    <div :class="$style.homeTextArea">
-                        <div :class="$style.homeTextAreaLeftBox">
-                            <textarea id="" v-model="text" :class="$style.homeTextAreaTag" name="" cols="30" rows="25"
-                                placeholder="To rewrite text, enter or paste it here and press &quot;Paraphrase.&quot;" />
-                            <div v-show="!text" :class="$style.homeTextAreaBoxPaste" @click="pasteText">
-                                <div :class="$style.homeTextAreaBoxPasteBox">
+                    <div :class="$style.homeTextFill">
+                        <div :class="$style.homeTextFillLeftBox">
+                            <!-- <textarea
+                id="" v-model="text" :class="$style.homeTextFillTag" name="" cols="30" rows="25"
+                placeholder="To rewrite text, enter or paste it here and press &quot;Paraphrase.&quot;"
+              /> -->
+                            <div id="bounding" contenteditable :class="$style.homeTextFillTag" :style="{
+            height: '300px',
+            padding: '30px 36px 8px 20px',
+        }" />
+                            <div v-show="!text" :class="$style.homeTextFillBoxPaste" @click="pasteText">
+                                <div :class="$style.homeTextFillBoxPasteBox">
                                     <svg :class="$style.homeTextArerPasteIcon"
                                         class="MuiSvgIcon-root MuiSvgIcon-colorPrimary MuiSvgIcon-fontSizeMedium"
                                         focusable="false" aria-hidden="true" viewBox="0 0 24 29" width="24" height="29"
@@ -67,21 +170,22 @@ async function parapharseText() {
                                     <i>Paste Text</i>
                                 </div>
                             </div>
-                            <div :class="$style.homeTextAreaLeftFooter">
-                                <div :class="$style.homeTextAreaLeftUpload">
+                            <div :class="$style.homeTextFillLeftFooter">
+                                <div :class="$style.homeTextFillLeftUpload">
                                     <Icon :class="$style.homeIcon" icon="bi:cloud-arrow-up" />
-                                    <span>Upload Doc</span>
+                                    <span>Upload Document</span>
                                 </div>
-                                <button :class="$style.homeTextAreaLeftButton" @click="parapharseText">
+                                <button  :class="$style.homeTextFillLeftButton"
+                                    @click="parapharseText">
                                     Paraphrase
                                 </button>
                             </div>
                         </div>
-                        <div :class="$style.homeTextAreaRightBox">
-                            <textarea id="" v-model="result" :class="$style.homeTextAreaTag" disable name="" cols="30"
-                                rows="25"
-                                placeholder="The Paraphrase text output is in here" />
-                        </div>
+                        <div placeholder="The result of paraphrase is in here" id="bounding" contenteditable
+                            :class="$style.homeTextFillTag" :style="{
+                            width: '50%'
+          
+        }" @mouseup="handleMouseUp" @blur="handleBlur"> {{result}} </div>
                     </div>
                 </div>
             </div>
@@ -118,9 +222,9 @@ async function parapharseText() {
 }
 
 .homeContent {
-    margin-left: 96px;
-    margin-top: 20px;
     width: 1200px;
+    margin-left: 96px;
+    margin-top: 52px;
     background-color: #f1f1f1;
     // height: 100vh;
 
@@ -132,7 +236,7 @@ async function parapharseText() {
 .homeContentParaPhrase {
     position: relative;
     padding: 25px 100px 44px 40px;
-
+    height: 100vh;
 }
 
 .homeContentLanguageList {
@@ -151,7 +255,7 @@ async function parapharseText() {
             background-color: #ffff;
 
             &:hover {
-                background-color: #25252514;
+                background-color: #ffffff9e;
             }
         }
 
@@ -161,12 +265,12 @@ async function parapharseText() {
     }
 }
 
-.homeTextAreaBox {
+.homeTextFillBox {
     position: relative;
     box-shadow: rgba(0, 0, 0, 0.3) 0px 26px 38px, rgba(0, 0, 0, 0.22) 0px 24px 12px;
 }
 
-.homeTextAreaBoxHeader {
+.homeTextFillBoxHeader {
     position: sticky;
     top: 49px;
     z-index: 10;
@@ -178,37 +282,43 @@ async function parapharseText() {
     border-bottom: 1px solid #DEE1E3;
 }
 
-.homeTextAreaBoxHeaderTitle {
+.homeTextFillBoxHeaderTitle {
     color: #505050;
     padding: 13px 12px 12px 20px;
     font-weight: 700;
     font-size: 16px;
 }
 
-.homeTextAreaBoxHeaderValue {
+.homeTextFillBoxHeaderValueActive {
     color: #499557;
     font-weight: 500;
     padding: 14px 9px 11px 9px;
     border-bottom: 2px solid #499557;
 }
 
-.homeTextArea {
+.homeTextFillBoxHeaderValue {
+    color: black;
+    font-weight: 500;
+    padding: 14px 9px 11px 9px;
+}
+
+.homeTextFill {
     background-color: #ffff;
     display: flex;
     align-items: start;
 }
 
-.homeTextAreaLeftBox {
+.homeTextFillLeftBox {
     position: relative;
     width: 50%;
     border-right: 3px solid rgba(0, 0, 0, 0.2);
 }
 
-.homeTextAreaRightBox {
+.homeTextFillRightBox {
     width: 50%;
 }
 
-.homeTextAreaTag {
+.homeTextFillTag {
     resize: none;
     width: 100%;
     border: none;
@@ -225,14 +335,14 @@ async function parapharseText() {
     }
 }
 
-.homeTextAreaLeftFooter {
+.homeTextFillLeftFooter {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding-right: 12px;
 }
 
-.homeTextAreaLeftUpload {
+.homeTextFillLeftUpload {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -254,7 +364,7 @@ async function parapharseText() {
     height: 24px;
 }
 
-.homeTextAreaLeftButton {
+.homeTextFillLeftButton {
     padding: 5px 25px 6px;
     font-size: 17.5px;
     font-weight: bold;
@@ -324,7 +434,7 @@ async function parapharseText() {
     }
 }
 
-.homeTextAreaBoxPaste {
+.homeTextFillBoxPaste {
     display: flex;
     align-items: center;
     cursor: pointer;
@@ -339,7 +449,7 @@ async function parapharseText() {
     border-radius: 6px;
 }
 
-.homeTextAreaBoxPasteBox {
+.homeTextFillBoxPasteBox {
     font-size: 12px;
     line-height: 16px;
     text-align: center;
