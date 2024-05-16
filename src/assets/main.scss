@@ -1,6 +1,8 @@
 @import "./variables";
+@import "./custom.scss";
 
 body {
+  box-sizing: border-box;
   padding: 0;
   margin:0;
   background-color: #F0F2F5;
@@ -38,3 +40,5 @@ ul li {
 *::-webkit-scrollbar-track {
   border-radius: 10px;
 }
+
+
