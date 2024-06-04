@@ -10,8 +10,6 @@ interface Position {
     y: number
 }
 
-
-
 const text = ref<string>('')
 const replaceText = ref<string[]>([])
 const result = ref<string>('')
@@ -101,13 +99,12 @@ onMounted(() => {
         selection = window.getSelection()
       
         if (!selection?.rangeCount || selection.getRangeAt(0).toString().length === 0) {
-            status.value = 'initial'
+          
             return
         }
 
         const range = selection.getRangeAt(0)
         
-
         rect.value = range.getBoundingClientRect()
         chilRects.value = Array.from(range.getClientRects())
     })
@@ -348,7 +345,7 @@ async function handleCopyText() {
 
                     <div :class="$style.PopoverContent">
                       <div :class="$style.PopoverContentHeader">
-                        <div :class="$style.PopoverContentRefresh" @click="getRefreshText">
+                        <div style="cursor: pointer;" :class="$style.PopoverContentRefresh" @click="getRefreshText">
                           <svg style="cursor: pointer" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
                             <path fill="currentColor"
                               d="M784.512 230.272v-50.56a32 32 0 1 1 64 0v149.056a32 32 0 0 1-32 32H667.52a32 32 0 1 1 0-64h92.992A320 320 0 1 0 524.8 833.152a320 320 0 0 0 320-320h64a384 384 0 0 1-384 384 384 384 0 0 1-384-384 384 384 0 0 1 643.712-282.88z">
