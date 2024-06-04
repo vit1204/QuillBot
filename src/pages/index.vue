@@ -101,6 +101,7 @@ onMounted(() => {
         selection = window.getSelection()
       
         if (!selection?.rangeCount || selection.getRangeAt(0).toString().length === 0) {
+            status.value = 'initial'
             return
         }
 
