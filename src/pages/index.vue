@@ -180,7 +180,7 @@ async function getRefreshText() {
     try {
         const content = selection?.getRangeAt(0).toString() || ''
         console.log(content)
-        const res = await OpenAi.getParaphraseFullContent(content, language.value)
+        const res = await OpenAi.getParaphraseFullContent(content,language.value)
         replaceText.value.push(res)
         if (replaceText.value.length > 1)
             paraPhraseId.value++
