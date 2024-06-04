@@ -109,8 +109,8 @@
 
 <style lang="scss" module>
 .sidebar {
-  
-        top: auto;
+     position: fixed;
+        top:42px;
         left: 0;
        height: 100vh;
         width: 100px;
@@ -144,8 +144,8 @@
     text-decoration: none;
         background-color: rgba(0, 0, 0, 0.04);
 }
-.sidebarItem:focus{
-    background-color: red;
+.sidebarItem:focus-visible{
+    // background-color: ;
 }
 
 .styleImg {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue";
 import Sidebar from "@/components/Sidebar.vue";
+import Footer from "@/components/Footer.vue";
 </script>
 
 <template>
@@ -11,9 +12,21 @@ import Sidebar from "@/components/Sidebar.vue";
 
 
     <Sidebar />
-    <RouterView />
+    <div :class="$style.containerLayout">
+
+      <RouterView />
+ 
+      <div :class="$style.footerLayout">
+        <Footer />
+
+      </div>
+
+    </div>
+
+
 
   </div>
+
 
 
 </template>
@@ -22,6 +35,9 @@ import Sidebar from "@/components/Sidebar.vue";
 .layoutContainer {
   display: flex;
   flex-direction: row;
- 
 }
+
+
+
+
 </style>

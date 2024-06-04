@@ -43,7 +43,10 @@ import Quill from "../../public/quill.vue"
 
 <style lang="scss" module>
 .header{
-   
+    position: fixed;
+
+   z-index: 100;
+   width: 100vw;
     background-color: white ;
     border-bottom: 1px solid var(--color-gray-lighter);
     span{
