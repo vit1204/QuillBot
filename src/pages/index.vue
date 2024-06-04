@@ -144,8 +144,8 @@ function isMouseInEllement(element: HTMLElement) {
 
 function handleMouseBlur() {
 
-    if (
-         (popoverRef.value && isMouseInEllement(popoverRef.value))
+    if ((inMouseArea.value && isMouseInEllement(inMouseArea.value))
+       ||  (popoverRef.value && isMouseInEllement(popoverRef.value))
         || (tooltipRef.value && isMouseInEllement(tooltipRef.value))
     ) {
         reselectElement()
@@ -180,7 +180,7 @@ async function getRefreshText() {
     try {
         const content = selection?.getRangeAt(0).toString() || ''
         console.log(content)
-        const res = await OpenAi.getParaphraseFullContent(text.value, language.value)
+        const res = await OpenAi.getParaphraseFullContent(content, language.value)
         replaceText.value.push(res)
         if (replaceText.value.length > 1)
             paraPhraseId.value++
