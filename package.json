@@ -16,10 +16,13 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.6",
+    "@huggingface/inference": "^2.8.1",
     "dotenv": "^16.4.5",
     "element-plus": "^2.6.1",
+    "openai": "^4.77.0",
     "vue": "^3.4.19",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "vue-selection": "^0.0.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.12.1",

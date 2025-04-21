@@ -1,4 +1,4 @@
-<script setup>
+<script lang="ts" setup>
 const FOOTER_API = [
   {
     id: 1,
@@ -165,7 +165,6 @@ const FOOTER_API = [
           at
         </span>
 
-
         <a href="/" :class="[$style.footerTradeMarkLink, $style.footerTradeMarkTitle]">UIUC</a>
       </div>
     </div>
@@ -271,7 +270,6 @@ const FOOTER_API = [
       background: rgba(0, 0, 0, 0.87);
       border-radius: 50%;
     }
-
 
     .footerTradeMarkImage {
       width: 18px;

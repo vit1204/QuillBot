@@ -1,72 +1,69 @@
 <script setup lang="ts">
-import {  reactive } from 'vue'
+import { reactive } from 'vue'
 
 const menuItems = reactive([
-    {
-        name: 'History',
-        src: '/src/assets/history-svg.svg',
-        srcDisplay: '',
-        
-        isPremium: true,
-    },
-    {
-        name: 'Compare Modes',
-        src: '/src/assets/photo-compare-svg.svg',
-        srcDisplay: '',
-       
-        isPremium: true,
-    },
-    {
-        name: 'Statistics',
-        src: '/src/assets/analytics-svg.svg',
-        srcDisplay: '',
+  {
+    name: 'History',
+    src: '/src/assets/history-svg.svg',
+    srcDisplay: '',
 
-        isPremium: false,
-    },
-    {
-        name: 'Tone',
-        src: '/src/assets/smile-svg.svg',
-        srcDisplay: '',
-        isPremium: true,
-    },
-    {
-        name: 'Setting',
-        src: '/src/assets/setting-svg.svg',
-        srcDisplay: '',
-        
-        isPremium: false,
-    },
-    {
-        name: 'Feedback',
-        src: '/src/assets/comment-svg.svg',
-        srcDisplay: '',
-        
-        isPremium: false,
-    },
-    {
-        name: 'Hotkeys',
-        src: '/src/assets/keyboard-svg.svg',
-        srcDisplay: '',
-        isPremium: false,
-    },
+    isPremium: true,
+  },
+  {
+    name: 'Compare Modes',
+    src: '/src/assets/photo-compare-svg.svg',
+    srcDisplay: '',
+
+    isPremium: true,
+  },
+  {
+    name: 'Statistics',
+    src: '/src/assets/analytics-svg.svg',
+    srcDisplay: '',
+
+    isPremium: false,
+  },
+  {
+    name: 'Tone',
+    src: '/src/assets/smile-svg.svg',
+    srcDisplay: '',
+    isPremium: true,
+  },
+  {
+    name: 'Setting',
+    src: '/src/assets/setting-svg.svg',
+    srcDisplay: '',
+
+    isPremium: false,
+  },
+  {
+    name: 'Feedback',
+    src: '/src/assets/comment-svg.svg',
+    srcDisplay: '',
+
+    isPremium: false,
+  },
+  {
+    name: 'Hotkeys',
+    src: '/src/assets/keyboard-svg.svg',
+    srcDisplay: '',
+    isPremium: false,
+  },
 
 ])
-
-
 </script>
 
 <template>
-    <div :class="$style.directionMenuContainer">
-        <div v-for="(item, index) in menuItems" :key="index" :class="$style.directionMenuItem">
-            <img :class="$style.directionMenuItemImg" :src="item.srcDisplay ? item.srcDisplay : item.src"
-               >
-          
-            <div v-if="item.isPremium" :class="$style.directionMenuItemIconPremium">
-                <img src="@/assets/diamond-svg.svg" alt="Premium">
-            </div>
-            <div v-if="item.isPremium" :class="$style.tooltipPremium" />
-        </div>
+  <div :class="$style.directionMenuContainer">
+    <div v-for="(item, index) in menuItems" :key="index" :class="$style.directionMenuItem">
+      <img :class="$style.directionMenuItemImg" :src="item.srcDisplay ? item.srcDisplay : item.src">
+
+      <div v-if="item.isPremium" :class="$style.directionMenuItemIconPremium">
+        <img src="@/assets/diamond-svg.svg" alt="Premium">
+      </div>
+      <div v-if="item.isPremium" :class="$style.tooltipPremium" />
     </div>
+  </div>
 </template>
 
 <style lang="scss" module>

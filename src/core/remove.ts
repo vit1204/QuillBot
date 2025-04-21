@@ -1,55 +1,46 @@
+import { setContentEditableSelection } from './set'
+import { isInput, isTextarea } from './utils'
 
-// // import { setContentEditableSelection, setSelection } from "./set";
-// import { isInput, isTextarea } from "./utils";
+interface removeSelectionOptions {
+  start: number
+  end: number
+}
 
-// interface RemoveSelectionOptions {
-//     start: number
-//     end: number
-//     text: string
+export function removeInputSelection(element: HTMLElement, option: removeSelectionOptions) {
+  const el = element as HTMLInputElement
+  const value = el.value
+  const { start, end } = option
+  const newValue = value.slice(0, start) + value.slice(end)
+  el.value = newValue
+}
 
-// }
+export function removeTextAreaSelection(element: HTMLElement, option: removeSelectionOptions) {
+  const el = element as HTMLInputElement
+  const value = el.value
+  const { start, end } = option
+  const newValue = value.slice(0, start) + value.slice(end)
+  el.value = newValue
+}
 
-// export function removeInputSelection(element: HTMLElement, options: RemoveSelectionOptions) {
-//     const el = element as HTMLInputElement
-//     const value = el.value
-//     const { start, end, text } = options
-//     el.value = value.slice(0, start) + text + value.slice(end)
+export function removeContentEditableSelection(element: HTMLElement, option: removeSelectionOptions) {
+  setContentEditableSelection(element, {
+    start: option.start,
+    end: option.end,
+    direction: 'forward',
+  })
 
+  const selection = window.getSelection()
+  const range = selection?.getRangeAt(0)
+  range?.deleteContents()
+}
 
-// }
+export function removeSelectionContent(element: HTMLElement, option: removeSelectionOptions) {
+  if (isInput(element))
+    removeInputSelection(element, option)
+  else if (isTextarea(element))
+    removeTextAreaSelection(element, option)
+  else
+    removeContentEditableSelection(element, option)
+}
 
-
-// export function removeTextareaSelection(element: HTMLElement, options: RemoveSelectionOptions) {
-//     const el = element as HTMLTextAreaElement
-//     const value = el.value
-//     const { start, end, text } = options
-//     el.value = value.slice(0, start) + text + value.slice(end)
-// }
-
-
-// export function removeContentEditableSelection(element: HTMLElement, options: RemoveSelectionOptions) {
-//     // setContentEditableSelection(element, {
-//     //     start: options.start,
-//     //     end: options.end,
-//     //     direction: "backward"
-//     // })
-
-//     const { start, end, text } = options
-//     const selection = window.getSelection()
-//     const range = selection?.getRangeAt(0)
-
-//     range?.deleteContents()
-
-//     range?.insertNode(document.createTextNode(text))
-// }
-
-// export function removeSelection(element: HTMLElement, options: RemoveSelectionOptions) {
-//     if (isInput(element)) {
-//         return removeInputSelection(element, options)
-//     } else if (isTextarea(element)) {
-//         return removeTextareaSelection(element, options)
-//     } else {
-//         return removeContentEditableSelection(element, options)
-//     }
-
-// }
+// export function removeSelection()

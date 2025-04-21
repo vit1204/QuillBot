@@ -1,101 +1,72 @@
+import { isInput, isTextarea } from './utils'
 
-// import { isInput, isTextarea } from "./utils";
+interface GetSelectionResult {
+  start: number
+  end: number
+  direction: 'forward' | 'backward' | 'none'
+  text: string
+}
 
+export function getInputSelection(element: HTMLElement) {
+  const inputEl = element as HTMLInputElement
 
-// interface GetSelectionResult{
-//     start: number
-//     end: number
-//     direction: 'forawrd' | 'backward' | 'none',
-//     text: string
-// }
+  const result = {
+    start: inputEl.selectionStart,
+    end: inputEl.selectionEnd,
+    direction: inputEl.selectionDirection as 'forward' | 'backward' | 'none',
+    text: inputEl.value.slice(inputEl.selectionStart || 0, inputEl.selectionEnd || 0),
+  }
+  return result as GetSelectionResult
+}
 
-// function getDefaultSelection():GetSelectionResult {
-// return {
-//     start: 0,
-//     end: 0,
-//     direction: 'none',
-//     text: ''
-//       }
-// }
+export function getTextAreaSelection(element: HTMLElement) {
+  const textareaEl = element as HTMLTextAreaElement
+  const result = {
+    start: textareaEl.selectionStart,
+    end: textareaEl.selectionEnd,
+    direction: textareaEl.selectionDirection as 'forward' | 'backward' | 'none',
+    text: textareaEl.value.slice(textareaEl.selectionStart || 0, textareaEl.selectionEnd || 0),
+  }
+  return result as GetSelectionResult
+}
 
+export function getContentEditableSelection(element: HTMLElement) {
+  const contentEditable = element as HTMLElement
+  const selection = window.getSelection()
 
-// export function getInputSelection(element: HTMLElement){
-//     const inputEl = element as HTMLInputElement
+  const range = selection?.getRangeAt(0)
+  if (!range)
+    return
 
-//     const result = {
-//         start: inputEl.selectionStart,
-//         end: inputEl.selectionEnd,
-//         direction: inputEl.selectionDirection,
-//         text: inputEl.value.slice(inputEl.selectionStart || 0 , inputEl.selectionEnd || 0)
+  const rangeClone = range?.cloneRange()
+  rangeClone?.selectNodeContents(contentEditable)
+  rangeClone?.setEnd(range?.startContainer, range?.startOffset)
+  // Get start position
+  const start = rangeClone?.toString().length || 0
+  rangeClone?.setEnd(range?.endContainer, range?.endOffset)
 
-        
-//     }    
-//     return result  as GetSelectionResult
+  // Get end position
+  const end = rangeClone?.toString().length || 0
+  const div = document.createElement('div')
+  div.appendChild(range.cloneContents())
 
+  const result = {
+    start,
+    end,
+    direction: 'forward',
+    text: div.innerHTML || range.toString() || div.textContent || '',
+  }
 
-// }
+  return result as GetSelectionResult
+}
 
-// export function getTextareaSelection(element: HTMLElement){
-// const textareaEl = element as HTMLTextAreaElement
-//     const result = {
-//         start: textareaEl.selectionStart,
-//         end: textareaEl.selectionEnd,
-//         direction: textareaEl.selectionDirection,
-//         text: textareaEl.value.slice(textareaEl.selectionStart || 0, textareaEl.selectionEnd || 0)
-//     }    
+export function getSelection(element: HTMLElement) {
+  if (isInput(element))
+    return getInputSelection(element)
 
-//     return result as GetSelectionResult
+  else if (isTextarea(element))
+    return getTextAreaSelection(element)
 
-
-// }
-
-
-// export function getSelectionCharacterOffsetWithin(element: HTMLElement){
-//     let start  = 0
-//     let end = 0
-
-//     const selection = window.getSelection()
-//     if(selection?.rangeCount){
-//         const range = selection.getRangeAt(0)
-//         const preCaretRange = range.cloneRange()
-//         preCaretRange.selectNodeContents(element)
-//         preCaretRange.setEnd(range.startContainer, range.startOffset)
-//         start = preCaretRange.toString().length
-
-//         preCaretRange.setEnd(range.endContainer, range.endOffset)   
-//         end = start + range.toString().length
-//     }
-//     return{start,end}
-// }
-
-// export function getContentEditableSelection(element: HTMLElement){
-//  const selection = window.getSelection()
-//  if(!selection?.rangeCount){
-//      return getDefaultSelection()
-//  }
-
-//   const range = selection.getRangeAt(0)
-//   const {start , end } = getSelectionCharacterOffsetWithin(range?.commonAncestorContainer as HTMLElement)
-//   const clonedSelection = range!.cloneContents()
-
-//   const tempDiv = document.createElement('div')
-//     tempDiv.appendChild(clonedSelection)
-//     return{
-//         text: tempDiv.innerHTML || range?.toString() || tempDiv.textContent || '',
-//         start,
-//         end,
-//         direction: 'forward' as const
-//     }
-// }
-
-
-
-// export function getSelection(element: HTMLElement){
-//     if(isInput(element)){
-//         return getInputSelection(element)
-//     }else if(isTextarea(element)){
-//         return getTextareaSelection(element)
-// } else{
-//     return getContentEditableSelection(element)
-// }
-// }
+  else
+    return getContentEditableSelection(element)
+}
